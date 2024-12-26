@@ -1,5 +1,14 @@
+import 'package:isar/isar.dart';
+
 ///TODO: Convert to freezed
+
+part 'countries_domain_model.g.dart';
+
+@collection
 class CountryDomainModel {
+  Id id = Isar.autoIncrement;
+
+  @Index(type: IndexType.value)
   final String name;
   final List<String> capital;
   final String flag;
@@ -9,6 +18,7 @@ class CountryDomainModel {
   final bool independent;
   final bool landLocked;
   final double area;
+  @ignore
   final Map<String, dynamic> languages;
 
   CountryDomainModel({
@@ -21,7 +31,7 @@ class CountryDomainModel {
     required this.independent,
     required this.landLocked,
     required this.area,
-    required this.languages,
+    this.languages = const {},
   });
 
   factory CountryDomainModel.fromJson(Map<String, dynamic> json) {

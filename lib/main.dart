@@ -1,13 +1,14 @@
-import 'package:clean_architecture_flutter/presentation/blocs/all_countries_event.dart';
-import 'package:clean_architecture_flutter/presentation/blocs/home_view_viewmodel.dart';
+import 'package:clean_architecture_flutter/barrel_file.dart';
 import 'package:clean_architecture_flutter/presentation/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/dependency_injection.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   setUpDependencyInjection();
+  await injector<DatabaseService>().openDB();
   runApp(
     BlocProvider(
       create: (BuildContext context) => injector<HomeViewModel>()..add(GetAllCountriesEvent()),

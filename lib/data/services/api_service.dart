@@ -4,6 +4,7 @@ import 'package:clean_architecture_flutter/barrel_file.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
 
+//TODO: See if you can reduce the number of methods in this [ApiClient] class
 class ApiClient {
   static const geminiModel = 'gemini-1.5-flash';
   static const baseUrl = 'https://restcountries.com/v3.1';

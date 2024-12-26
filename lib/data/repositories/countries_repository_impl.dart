@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:isar/isar.dart';
 
 import '../../barrel_file.dart';
 
@@ -6,14 +7,31 @@ typedef GetCountryFunc = Future<List<Map<String, dynamic>>> Function(String text
 
 class CountryRepositoryImpl implements CountryRepository {
   final ApiClient _apiClient;
+  final DatabaseService _databaseService;
 
-  const CountryRepositoryImpl({required ApiClient apiClient}) : _apiClient = apiClient;
+  const CountryRepositoryImpl(
+      {required ApiClient apiClient, required DatabaseService databaseService})
+      : _apiClient = apiClient,
+        _databaseService = databaseService;
 
   @override
   Future<List<CountryDomainModel>> getAllCountries() async {
+    Isar isar = _databaseService.isar;
+    if (isar.isOpen) {
+      bool dbHasCountryDomainModels =
+          await _databaseService.isar.countryDomainModels.where().isNotEmpty();
+
+      if (dbHasCountryDomainModels) {
+        return _databaseService.isar.countryDomainModels.where().findAll();
+      }
+    }
+
     try {
       List<dynamic> countries = await _apiClient.getAllCountries();
-      return countries.map((element) => CountryDomainModel.fromJson(element)).toList();
+      List<CountryDomainModel> countryDomainModels =
+          countries.map((element) => CountryDomainModel.fromJson(element)).toList();
+      _databaseService.saveCountryDomainModels(countryDomainModels);
+      return countryDomainModels;
     } on CountriesException {
       rethrow;
     } catch (e) {
@@ -69,3 +87,9 @@ Map<String, GetCountryFunc> Function(ApiClient apiClient) _identifierMap = (apiC
     "translation": apiClient.getCountryByTranslation,
   };
 };
+
+class Command {
+  final String _aok;
+
+  Command(this._aok);
+}
