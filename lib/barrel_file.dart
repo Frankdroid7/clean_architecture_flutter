@@ -1,5 +1,4 @@
-export 'core/converters/abstract_converter.dart';
-export 'core/exceptions/exceptions.dart';
+export 'core/core.dart';
 export 'data/repositories/repositories.dart';
 export 'data/services/services.dart';
 export 'domain/domain.dart';

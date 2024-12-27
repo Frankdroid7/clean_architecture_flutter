@@ -15,17 +15,25 @@ class CountryRepositoryImpl implements CountryRepository {
         _databaseService = databaseService;
 
   @override
-  Future<List<CountryDomainModel>> getAllCountries() async {
-    Isar isar = _databaseService.isar;
-    if (isar.isOpen) {
-      bool dbHasCountryDomainModels =
-          await _databaseService.isar.countryDomainModels.where().isNotEmpty();
+  Future<List<CountryDomainModel>> getAllCountries({required FetchPolicy fetchPolicy}) async {
+    switch (fetchPolicy) {
+      case FetchPolicy.network:
+        return _getAllCountriesFromNetwork();
+      case FetchPolicy.databaseFirst:
+        Isar isar = _databaseService.isar;
+        if (isar.isOpen) {
+          bool dbHasCountryDomainModels =
+              await _databaseService.isar.countryDomainModels.where().isNotEmpty();
 
-      if (dbHasCountryDomainModels) {
-        return _databaseService.isar.countryDomainModels.where().findAll();
-      }
+          if (dbHasCountryDomainModels) {
+            return _databaseService.isar.countryDomainModels.where().findAll();
+          }
+        }
+        return _getAllCountriesFromNetwork();
     }
+  }
 
+  Future<List<CountryDomainModel>> _getAllCountriesFromNetwork() async {
     try {
       List<dynamic> countries = await _apiClient.getAllCountries();
       List<CountryDomainModel> countryDomainModels =

@@ -30,11 +30,24 @@ class SearchPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () => context.read<HomeViewModel>().add(
-                            GetCountryIdentifier(textFieldCtrl.text),
-                          ),
-                      child: const Text('Get Country'),
+                    Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => context.read<HomeViewModel>().add(
+                                GetCountryIdentifier(textFieldCtrl.text),
+                              ),
+                          child: const Text('Get Country(s)'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            textFieldCtrl.clear();
+                            context.read<HomeViewModel>().add(
+                                  GetAllCountriesEvent(fetchPolicy: FetchPolicy.network),
+                                );
+                          },
+                          child: const Text('Refresh'),
+                        ),
+                      ],
                     ),
                   ],
                 ),

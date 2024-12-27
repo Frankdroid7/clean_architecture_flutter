@@ -15,7 +15,8 @@ class HomeViewModel extends Bloc<CountryEvent, CountryState> {
     emit(CountriesLoadingState());
 
     try {
-      List<CountryDomainModel> countriesDomainModel = await _countriesRepository.getAllCountries();
+      List<CountryDomainModel> countriesDomainModel =
+          await _countriesRepository.getAllCountries(fetchPolicy: event.fetchPolicy);
 
       List<CountryUIModel> allCountriesUIModel = countriesDomainModel.map((model) {
         CountryUIModel countryUIModel = HomeViewCountryConverter().convert(model);
