@@ -95,9 +95,3 @@ Map<String, GetCountryFunc> Function(ApiClient apiClient) _identifierMap = (apiC
     "translation": apiClient.getCountryByTranslation,
   };
 };
-
-class Command {
-  final String _aok;
-
-  Command(this._aok);
-}
